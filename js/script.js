@@ -841,17 +841,18 @@
     /* ══════════════════════════════════════════
        18. ENVELOPE ANIMATION
        ══════════════════════════════════════════ */
-    const envelope = $('#envelope');
+    const envelopeBtn = $('#envelopeBtn');
     let envelopeOpened = false;
 
-    if (envelope) {
-        envelope.addEventListener('click', () => {
+    if (envelopeBtn) {
+        envelopeBtn.addEventListener('click', () => {
             if (envelopeOpened) return;
             envelopeOpened = true;
-            envelope.classList.add('open');
             sfxHeartbeat();
-            const btn = $('#letterNextBtn');
-            setTimeout(() => { if (btn) btn.style.display = 'inline-block'; }, 2000);
+            // Hide envelope, show letter
+            $('#envelopeClosed').style.display = 'none';
+            $('#letterRevealed').style.display = 'block';
+            $('#letterNextBtn').style.display = 'inline-block';
         });
     }
 

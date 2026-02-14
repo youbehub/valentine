@@ -247,23 +247,20 @@
          ═══════════════════════════════════════ -->
     <section class="screen envelope-screen" id="envelopeScreen">
         <div class="screen-content envelope-content">
-            <p class="envelope-prompt" id="envelopePrompt">You have a letter 💌</p>
-            <div class="envelope-wrap" id="envelopeWrap">
-                <div class="envelope" id="envelope">
-                    <div class="envelope-back"></div>
-                    <div class="envelope-letter" id="envelopeLetter">
-                        <div class="letter-card">
-                            <p class="letter-greeting pname" data-tpl="My beautiful {name},">My beautiful Love,</p>
-                            <p class="letter-body">From the very first moment I saw you, I knew my world had changed forever. You are the reason I believe in magic — because nothing short of it could explain how perfectly you fit into my life.</p>
-                            <p class="letter-body">Every day I choose you. Not because I have to, but because you are the best thing that has ever happened to me. I promise to love you through every storm, celebrate you through every victory, and hold your hand through every quiet moment in between.</p>
-                            <p class="letter-body">You are my peace, my adventure, my home. And I will spend every day making sure you never forget how extraordinary you are.</p>
-                            <p class="letter-closing">Forever yours,<br><span class="letter-signature">❤️</span></p>
-                        </div>
-                    </div>
-                    <div class="envelope-front">
-                        <div class="envelope-seal">💌</div>
-                    </div>
-                    <div class="envelope-flap"></div>
+            <!-- Closed envelope (tap to open) -->
+            <div id="envelopeClosed">
+                <p class="envelope-prompt">You have a letter 💌</p>
+                <div class="envelope-icon" id="envelopeBtn">💌</div>
+                <p class="envelope-tap-hint">Tap to open</p>
+            </div>
+            <!-- Letter (hidden until opened) -->
+            <div id="letterRevealed" class="letter-revealed" style="display:none">
+                <div class="letter-card">
+                    <p class="letter-greeting pname" data-tpl="My beautiful {name},">My beautiful Love,</p>
+                    <p class="letter-body">From the very first moment I saw you, I knew my world had changed forever. You are the reason I believe in magic — because nothing short of it could explain how perfectly you fit into my life.</p>
+                    <p class="letter-body">Every day I choose you. Not because I have to, but because you are the best thing that has ever happened to me. I promise to love you through every storm, celebrate you through every victory, and hold your hand through every quiet moment in between.</p>
+                    <p class="letter-body">You are my peace, my adventure, my home. And I will spend every day making sure you never forget how extraordinary you are.</p>
+                    <p class="letter-closing">Forever yours,<br><span class="letter-signature">❤️</span></p>
                 </div>
             </div>
             <button class="btn-primary" id="letterNextBtn" style="display:none;margin-top:20px">Continue 💕</button>

@@ -788,60 +788,44 @@ input{font-family:inherit}
     font-family:var(--font-display);
     font-size:clamp(1.1rem,3vw,1.4rem);
     font-style:italic;color:var(--c-soft);
-    margin-bottom:28px;
+    margin-bottom:24px;
     animation:neonFadeIn 1s ease both;
 }
-.envelope-wrap{
-    perspective:800px;
-    width:min(320px,85vw);margin:0 auto;
+.envelope-icon{
+    font-size:5rem;
     cursor:pointer;
-}
-.envelope{
-    position:relative;
-    width:100%;aspect-ratio:1.6/1;
-    transform-style:preserve-3d;
-}
-.envelope-back{
-    position:absolute;inset:0;
-    background:linear-gradient(145deg,#c47a7a,#a05a5a);
-    border-radius:12px;z-index:1;
-}
-.envelope-front{
-    position:absolute;inset:0;
-    background:linear-gradient(135deg,#d48a8a,#b06a6a);
-    border-radius:12px;z-index:3;
-    clip-path:polygon(0 40%,50% 70%,100% 40%,100% 100%,0 100%);
-    display:flex;align-items:center;justify-content:center;
-    padding-top:15%;
-    transition:opacity .6s .4s;
-}
-.envelope-seal{
-    font-size:2rem;
-    filter:drop-shadow(0 2px 8px rgba(0,0,0,.3));
     animation:heartPulse 2s ease infinite;
+    filter:drop-shadow(0 4px 20px rgba(255,64,129,.4));
+    transition:transform .3s var(--ease-spring);
+    user-select:none;
 }
-.envelope-flap{
-    position:absolute;top:0;left:0;width:100%;height:50%;
-    background:linear-gradient(180deg,#c07070,#b06a6a);
-    clip-path:polygon(0 0,100% 0,50% 100%);
-    transform-origin:top center;
-    z-index:4;
-    transition:transform .8s var(--ease-out);
+.envelope-icon:hover{transform:scale(1.15)}
+.envelope-icon:active{transform:scale(.95)}
+.envelope-tap-hint{
+    font-size:.85rem;color:var(--c-text-dim);
+    margin-top:12px;font-style:italic;
+    animation:neonFadeIn 1.5s ease both 1s;
 }
-.envelope-letter{
-    position:absolute;
-    left:8%;width:84%;
-    bottom:10%;
-    z-index:2;
-    transition:transform 1s var(--ease-out) .3s;
+
+/* Letter card (revealed after tap) */
+.letter-revealed{
+    width:min(400px,90vw);
+    margin:0 auto;
+    max-height:60vh;
+    overflow-y:auto;
+    animation:letterReveal .8s var(--ease-spring) both;
+}
+@keyframes letterReveal{
+    from{opacity:0;transform:translateY(40px) scale(.9)}
+    to{opacity:1;transform:translateY(0) scale(1)}
 }
 .letter-card{
     background:rgba(255,255,255,.95);
-    border-radius:12px;
-    padding:clamp(16px,4vw,28px);
+    border-radius:16px;
+    padding:clamp(20px,5vw,32px);
     color:#2a1a3a;
     text-align:left;
-    box-shadow:0 4px 20px rgba(0,0,0,.15);
+    box-shadow:0 8px 40px rgba(255,64,129,.15);
 }
 .letter-greeting{
     font-family:var(--font-display);
@@ -850,8 +834,8 @@ input{font-family:inherit}
     margin-bottom:12px;
 }
 .letter-body{
-    font-size:clamp(.8rem,2.2vw,.92rem);
-    line-height:1.7;margin-bottom:10px;
+    font-size:clamp(.85rem,2.2vw,.95rem);
+    line-height:1.75;margin-bottom:10px;
     color:#3a2a4a;
 }
 .letter-closing{
@@ -861,11 +845,6 @@ input{font-family:inherit}
     margin-top:16px;
 }
 .letter-signature{font-size:1.2rem}
-
-/* Envelope open state */
-.envelope.open .envelope-flap{transform:rotateX(180deg)}
-.envelope.open .envelope-front{opacity:0}
-.envelope.open .envelope-letter{transform:translateY(-110%)}
 
 /* ═══════════════════════════════════════════
    SCREEN 11 — FINAL (SCORE + QR + SHARE)
@@ -965,7 +944,7 @@ input{font-family:inherit}
     .forever-card{padding:24px 18px}
     .keypad{gap:8px;max-width:220px}
     .key-btn{padding:13px}
-    .envelope-wrap{width:90vw}
+    .letter-revealed{width:90vw}
     .score-ring{width:120px;height:120px}
     .final-buttons{flex-direction:column;gap:10px}
     .btn-primary,.btn-secondary{width:100%}
