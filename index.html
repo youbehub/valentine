@@ -1,0 +1,258 @@
+<!--
+  💕 VALENTINE CINEMATIC EXPERIENCE — Ultimate Edition
+  ─────────────────────────────────────────────────────
+  SETUP:
+  1. Drop your romantic.mp3 into  assets/romantic.mp3
+  2. Drop your photos into        assets/memories/memory1.jpg, memory2.jpg, memory3.jpg
+  3. Replace favicon.ico if desired
+  4. Deploy to Vercel (push to GitHub → import → deploy)
+  ─────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>💕 Our Love Story — Valentine Experience</title>
+    <meta name="description" content="A cinematic Valentine experience crafted with love — quiz, mini-game, love letters & memories.">
+    <meta name="author" content="With Love">
+    <meta property="og:title" content="💕 Our Love Story — Valentine Experience">
+    <meta property="og:description" content="A cinematic Valentine experience crafted with love.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="assets/hearts.svg">
+    <meta name="theme-color" content="#ff1744">
+    <link rel="icon" href="favicon.ico">
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ═══ Background Layers ═══ -->
+    <canvas id="particleCanvas" aria-hidden="true"></canvas>
+    <div id="floatingHearts" aria-hidden="true"></div>
+    <canvas id="fireworkCanvas" aria-hidden="true"></canvas>
+
+    <!-- ═══ Audio ═══ -->
+    <audio id="bgMusic" loop preload="auto" src="assets/romantic.mp3"></audio>
+
+    <!-- ═══ Music Toggle ═══ -->
+    <button class="music-toggle muted" id="musicToggle" aria-label="Toggle music">
+        <span id="musicIcon">♫</span>
+    </button>
+
+    <!-- ═══ PWA Install ═══ -->
+    <button class="install-btn" id="installBtn" style="display:none" aria-label="Install app">📲 Install</button>
+
+    <!-- ═══════════════════════════════════════
+         SCREEN 1 — Name Entry
+         ═══════════════════════════════════════ -->
+    <section class="screen name-screen active" id="nameScreen">
+        <div class="screen-content name-content">
+            <div class="glass-card name-card">
+                <h1 class="name-card-title">💕 Welcome, My Love</h1>
+                <p class="name-card-sub">What should I call you?</p>
+                <div class="name-input-wrap">
+                    <input type="text" class="name-input" id="nameInput" placeholder="Your name…" maxlength="24" autocomplete="off" spellcheck="false">
+                    <div class="input-glow"></div>
+                </div>
+                <button class="btn-primary btn-name" id="nameSubmitBtn" disabled>Continue 💖</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         SCREEN 2 — Neon Name Reveal
+         ═══════════════════════════════════════ -->
+    <section class="screen neon-reveal-screen" id="neonRevealScreen">
+        <div class="neon-backdrop"></div>
+        <div class="neon-sparkles" id="neonSparkles"></div>
+        <div class="screen-content neon-content">
+            <p class="neon-pre">This is for you…</p>
+            <h1 class="neon-name" id="neonName"></h1>
+            <div class="neon-underline"></div>
+            <p class="neon-post">My Valentine ❤️</p>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         SCREEN 3 — Loader
+         ═══════════════════════════════════════ -->
+    <section class="screen loader-screen" id="loaderScreen">
+        <div class="screen-content loader-content">
+            <img src="assets/hearts.svg" alt="" class="loader-heart-svg" width="80" height="80">
+            <h2 class="loader-title">Preparing Your Experience…</h2>
+            <div class="loader-bar"><div class="loader-bar-fill" id="loaderBarFill"></div></div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         SCREEN 4 — Start / Intro
+         ═══════════════════════════════════════ -->
+    <section class="screen start-screen" id="startScreen">
+        <div class="screen-content start-content">
+            <h1 class="main-title">💕 Our Love Story</h1>
+            <h2 class="sub-title"><span class="pname" data-tpl="My {name}">My Love</span> <span class="heart-inline">❤️</span></h2>
+            <p class="typing-text" id="typingText"></p>
+            <button class="btn-primary" id="startBtn">Begin Our Journey 💖</button>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         SCREEN 5 — Love Quiz
+         ═══════════════════════════════════════ -->
+    <section class="screen quiz-screen" id="quizScreen">
+        <div class="screen-content quiz-content">
+            <h2 class="section-heading">Love Quiz 💕</h2>
+            <div class="quiz-progress">
+                <span id="progressCounter">1 / 5</span>
+                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                <div class="progress-hearts-row" id="progressHeartsRow"></div>
+            </div>
+            <div class="glass-card question-card" id="questionCard">
+                <p class="question-text" id="questionText"></p>
+                <div class="love-meter">Love: <span id="lovePercent">0%</span></div>
+            </div>
+            <div class="options-container" id="optionsContainer"></div>
+            <div class="heart-explosion" id="heartExplosion"></div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         SCREEN 6 — Mini Game
+         ═══════════════════════════════════════ -->
+    <section class="screen mini-game-screen" id="miniGameScreen">
+        <div class="screen-content game-content">
+            <h2 class="section-heading">Catch the Hearts! 💖</h2>
+            <div class="game-stats">
+                <span>⏱ <span id="gameTimer">10</span>s</span>
+                <span>💕 <span id="caughtCount">0</span></span>
+            </div>
+            <div class="game-area" id="gameArea"></div>
+            <button class="btn-primary" id="startMiniGameBtn">Start Game! 🎮</button>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         SCREEN 7 — Forever Question
+         ═══════════════════════════════════════ -->
+    <section class="screen forever-screen" id="foreverScreen">
+        <div class="screen-content forever-content">
+            <div class="glass-card forever-card">
+                <h1 class="forever-title pname" data-tpl="Will you be mine forever, {name}?">Will you be mine forever?</h1>
+                <p class="forever-sub pname" data-tpl="What do you say, {name}? 💕">What do you say? 💕</p>
+                <div class="forever-buttons" id="foreverButtons">
+                    <button class="btn-primary btn-yes" id="btnYes">YES ❤️</button>
+                    <button class="btn-secondary btn-no" id="btnNo">NO 🙈</button>
+                </div>
+                <p class="forever-msg" id="foreverMsg"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         SCREEN 8 — Memory Slideshow
+         ═══════════════════════════════════════ -->
+    <section class="screen memory-screen" id="memoryScreen">
+        <div class="screen-content memory-content">
+            <h2 class="section-heading pname" data-tpl="Our Beautiful Moments, {name} ❤️">Our Beautiful Moments ❤️</h2>
+            <div class="slideshow-wrap" id="slideshowWrap">
+                <div class="slideshow" id="slideshow">
+                    <div class="slide active" style="background-image:url('assets/memories/memory1.jpg')"></div>
+                    <div class="slide" style="background-image:url('assets/memories/memory2.jpg')"></div>
+                    <div class="slide" style="background-image:url('assets/memories/memory3.jpg')"></div>
+                </div>
+                <button class="slide-arrow slide-prev" id="slidePrev" aria-label="Previous">‹</button>
+                <button class="slide-arrow slide-next" id="slideNext" aria-label="Next">›</button>
+                <div class="slide-dots" id="slideDots"></div>
+            </div>
+            <button class="btn-primary" id="memoryNextBtn" style="margin-top:28px">Continue 💕</button>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         SCREEN 9 — Secret Lock
+         ═══════════════════════════════════════ -->
+    <section class="screen lock-screen" id="lockScreen">
+        <div class="screen-content lock-content">
+            <div class="lock-icon" id="lockIcon">
+                <svg viewBox="0 0 64 80" class="lock-svg" aria-hidden="true">
+                    <rect class="lock-body" x="8" y="36" width="48" height="36" rx="8"/>
+                    <path class="lock-shackle" id="lockShackle" d="M16 36V24a16 16 0 0 1 32 0v12" fill="none" stroke-width="5" stroke-linecap="round"/>
+                    <circle class="lock-hole" cx="32" cy="52" r="4"/>
+                </svg>
+            </div>
+            <h2 class="lock-title">Secret Lock 🔐</h2>
+            <p class="lock-sub">Enter the secret code to unlock</p>
+            <div class="code-display" id="codeDisplay">
+                <span class="code-dot"></span><span class="code-dot"></span>
+                <span class="code-dot"></span><span class="code-dot"></span>
+            </div>
+            <div class="keypad" id="keypad"></div>
+            <p class="lock-hint" id="lockHint"></p>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         SCREEN 10 — Envelope + Love Letter
+         ═══════════════════════════════════════ -->
+    <section class="screen envelope-screen" id="envelopeScreen">
+        <div class="screen-content envelope-content">
+            <p class="envelope-prompt" id="envelopePrompt">You have a letter 💌</p>
+            <div class="envelope-wrap" id="envelopeWrap">
+                <div class="envelope" id="envelope">
+                    <div class="envelope-back"></div>
+                    <div class="envelope-letter" id="envelopeLetter">
+                        <div class="letter-card">
+                            <p class="letter-greeting pname" data-tpl="My beautiful {name},">My beautiful Love,</p>
+                            <p class="letter-body">From the very first moment I saw you, I knew my world had changed forever. You are the reason I believe in magic — because nothing short of it could explain how perfectly you fit into my life.</p>
+                            <p class="letter-body">Every day I choose you. Not because I have to, but because you are the best thing that has ever happened to me. I promise to love you through every storm, celebrate you through every victory, and hold your hand through every quiet moment in between.</p>
+                            <p class="letter-body">You are my peace, my adventure, my home. And I will spend every day making sure you never forget how extraordinary you are.</p>
+                            <p class="letter-closing">Forever yours,<br><span class="letter-signature">❤️</span></p>
+                        </div>
+                    </div>
+                    <div class="envelope-front">
+                        <div class="envelope-seal">💌</div>
+                    </div>
+                    <div class="envelope-flap"></div>
+                </div>
+            </div>
+            <button class="btn-primary" id="letterNextBtn" style="display:none;margin-top:20px">Continue 💕</button>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         SCREEN 11 — Final (Score + QR + Share)
+         ═══════════════════════════════════════ -->
+    <section class="screen final-screen" id="finalScreen">
+        <div class="screen-content final-content">
+            <h1 class="final-title">Our Love Score 💕</h1>
+            <div class="score-ring">
+                <svg class="score-ring-svg" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8"/>
+                    <circle id="scoreRingFill" cx="60" cy="60" r="52" fill="none" stroke="url(#scoreGrad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="326.73" transform="rotate(-90 60 60)"/>
+                </svg>
+                <span class="score-number" id="finalScoreNumber">0</span>
+            </div>
+            <p class="final-rating" id="finalRating"></p>
+            <p class="final-message pname" data-tpl="{name}, you are my everything 💕">You are my everything 💕</p>
+            <div class="qr-section">
+                <h3 class="qr-heading">Share Our Story ❤️</h3>
+                <canvas id="qrCanvas" width="200" height="200"></canvas>
+                <p class="qr-hint">Scan to relive our story</p>
+            </div>
+            <div class="final-buttons">
+                <button class="btn-primary btn-share" id="shareBtn">Share 💕</button>
+                <button class="btn-secondary btn-replay" id="restartBtn">Replay 🔄</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ Toast ═══ -->
+    <div class="toast" id="toast"></div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
