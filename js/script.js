@@ -46,39 +46,147 @@
     const floatingBox    = $('#floatingHearts');
 
     /* ──────────────────────────────────────────
-       2. QUIZ DATA
+       2. QUIZ DATA — Gender-based, Category-based
        ────────────────────────────────────────── */
-    const questions = [
-        {
-            q: "When did we first talk? 💬",
-            opts: ["In a dream, it felt like","At the right moment destiny chose",
-                   "Through a text that changed everything","I don't remember, but my heart does"],
-            ans: 2
+    let playerType  = ''; // 'queen' or 'king'
+    let passionMode = false;
+    let activeQuiz  = []; // shuffled selection for current session
+
+    const quizBank = {
+        queen: {
+            sweet: [
+                { q:"What's one thing that always makes you smile about me? 😊", opts:["Your laugh","Your eyes","Everything about you","The way you care"],ans:2 },
+                { q:"What would be our perfect lazy Sunday? ☀️", opts:["Cuddling all day","Cooking together","Watching movies in bed","All of the above 💕"],ans:3 },
+                { q:"If I wrote you a poem, would you… 📝", opts:["Frame it forever","Read it every night","Cry happy tears","Kiss me immediately"],ans:0 },
+                { q:"What's the sweetest thing I've done for you? 🥰", opts:["Surprised you randomly","Held you without asking","Remembered small details","Made you feel safe"],ans:3 },
+                { q:"How would you describe us in one word? 💫", opts:["Magic","Destiny","Home","Everything"],ans:2 },
+                { q:"What's your favorite thing I say to you? 💬", opts:["I love you","You're beautiful","I'm here for you","Good morning, my queen"],ans:3 },
+                { q:"If I picked a flower for you every day… 🌸", opts:["You'd have a garden","You'd press them all","You'd love it forever","You'd cry every time"],ans:0 },
+                { q:"What kind of hug do you love most from me? 🤗", opts:["Surprise back hugs","Long tight ones","The forehead-touch ones","Morning sleepy hugs"],ans:1 },
+                { q:"When you're sad, what do you want most from me? 💝", opts:["Just hold me","Tell me it's okay","Make me laugh","Stay silent and be close"],ans:0 },
+                { q:"What love song reminds you of us? 🎵", opts:["Something soft","Something passionate","Our own frequency","Every love song ever"],ans:3 },
+                { q:"What's our love language? 💌", opts:["Words of affirmation","Physical touch","Quality time","All of them at once"],ans:3 },
+                { q:"If I surprised you with breakfast in bed… 🥞", opts:["I'd cry","I'd pull you back in bed","I'd never forget it","All three, in order"],ans:3 },
+                { q:"What about me made you feel safe? 🏡", opts:["Your voice","Your patience","Your arms","Your consistency"],ans:3 },
+                { q:"How do you feel when I hold your hand? 🤝", opts:["Complete","Protected","Electric","Like time stops"],ans:3 },
+                { q:"What's something small I do that means the world? 🌍", opts:["Checking on you","Sending good morning texts","Remembering details","Looking at you like that"],ans:2 }
+            ],
+            romantic: [
+                { q:"When did you first realize you loved me? 💕", opts:["It hit me suddenly","It grew slowly","I always knew","The moment I saw you"],ans:2 },
+                { q:"What's the most romantic moment we've shared? 🌙", opts:["Our first kiss","A late-night talk","Dancing together","Every single moment"],ans:3 },
+                { q:"If we could relive one moment, which one? ✨", opts:["Our first date","The first 'I love you'","That sunset together","When we knew it was real"],ans:3 },
+                { q:"What do my eyes say when I look at you? 👀", opts:["I'm proud of you","I want only you","You're my universe","All of the above"],ans:3 },
+                { q:"Where would you want me to take you tonight? 🌃", opts:["Under the stars","A candlelit dinner","Anywhere with you","A secret place only we know"],ans:2 },
+                { q:"What's the most romantic thing I could do? 🥀", opts:["Write you a letter","Dance with you at midnight","Whisper 'I love you' softly","look into your eyes and say nothing"],ans:3 },
+                { q:"If our love was a movie, what genre? 🎬", opts:["Epic romance","Timeless classic","A fairy tale","Something the world hasn't seen"],ans:3 },
+                { q:"How do I make you feel loved without words? 🤍", opts:["The way you look at me","How you pull me close","Your gentle touches","All of it, always"],ans:3 },
+                { q:"What do you dream about when you think of us? 💭", opts:["Growing old together","Adventures together","Quiet mornings","Forever, literally"],ans:3 },
+                { q:"If I danced with you right now, what would you do? 💃", opts:["Put my head on your chest","Look into your eyes","Hold you tighter","Never let go"],ans:3 },
+                { q:"What moment sealed it — you knew I was the one? 🔐", opts:["How you treated me","A look you gave me","Something you said","It wasn't one moment — it was all of them"],ans:3 },
+                { q:"Would you slow dance with me in the rain? 🌧️", opts:["Without hesitation","Only if you hold me close","I'd be the one asking","I'd kiss you mid-dance"],ans:3 },
+                { q:"What's the most beautiful thing about us? 🌹", opts:["Our trust","Our chemistry","Our understanding","The love that never fades"],ans:3 },
+                { q:"If I promised you forever, would you believe me? 💍", opts:["I already do","Say it again and again","Forever is our thing","I believe every word"],ans:0 },
+                { q:"What's the one thing you never want to lose? 💎", opts:["Your smile","Our connection","The way you make me feel","Us"],ans:3 }
+            ],
+            spicy: [
+                { q:"What happens when I whisper your name close to your ear? 😏", opts:["Everything stops","My heart races","I pull you closer","You already know…"],ans:3 },
+                { q:"If we were alone right now… what happens next? 🔥", opts:["Deep eye contact","A slow kiss","I tell you what I'm thinking","Some things are better shown"],ans:3 },
+                { q:"Do you prefer slow romantic moments or intense eye contact? 👁️", opts:["Slow and deep","Intense and electric","Both — depends on the mood","Whatever makes your heart race"],ans:2 },
+                { q:"What's the most attractive thing I do without trying? 💫", opts:["The way you smile at me","How confident you are","That look you give me","When you get close without warning"],ans:3 },
+                { q:"If I held your face in my hands right now… 🤲", opts:["I'd melt","Kiss me already","I'd forget how to breathe","Don't stop there"],ans:3 },
+                { q:"What's your weakness when it comes to me? 😈", opts:["Your voice","Your eyes","Your touch","The tension between us"],ans:3 },
+                { q:"What kind of kiss do you like most from me? 💋", opts:["Soft and slow","Passionate and deep","Surprise kisses","Forehead kisses that linger"],ans:1 },
+                { q:"If I traced my finger along your jawline… ✋", opts:["I'd close my eyes","I'd pull you in","I'd lose all words","Stop teasing and kiss me"],ans:3 },
+                { q:"What's more irresistible — my words or my silence? 🤫", opts:["Your words drive me crazy","Your silence speaks louder","Both at the right moment","When you look at me and say nothing"],ans:3 },
+                { q:"If I looked at you from across the room… 💘", opts:["I'd come to you","I'd blush and look away","I'd hold your gaze","The whole room would disappear"],ans:3 },
+                { q:"What moment between us had the most chemistry? ⚡", opts:["Our first real talk","When we couldn't stop staring","A moment of comfortable silence","Every time we're close"],ans:3 },
+                { q:"What's your favorite way I say 'I want you'? 🌹", opts:["With your eyes","With your hands","With your words","You don't have to say it"],ans:3 },
+                { q:"If I pulled you close by the waist right now… 🫂", opts:["I'd wrap my arms around you","My heart would stop","Time would freeze","Everything else disappears"],ans:3 },
+                { q:"What do you feel when our hands barely touch? ✨", opts:["Electricity","Butterflies","An ache for more","All of it at once"],ans:3 },
+                { q:"Complete this: When you're near me, I can't stop thinking about… 💭", opts:["Kissing you","Holding you","Being yours completely","Things I'd rather whisper"],ans:3 }
+            ]
         },
-        {
-            q: "Who fell in love first? 😍",
-            opts: ["Me, obviously!","You, but you won't admit it",
-                   "We both did at the same time","Love chose us both equally"],
-            ans: 0
-        },
-        {
-            q: "What makes our love special? ✨",
-            opts: ["The way we understand each other","Every moment feels like magic",
-                   "We make each other better","All of the above 💕"],
-            ans: 3
-        },
-        {
-            q: "What nickname do I love calling you? 🥰",
-            opts: ["My Sunshine","My Princess","My Everything","Baby"],
-            ans: 1
-        },
-        {
-            q: "Will you stay with me forever? 💍",
-            opts: ["Always and forever","Until the stars stop shining",
-                   "Beyond forever","All of the above ❤️"],
-            ans: 3
+        king: {
+            sweet: [
+                { q:"What's the first thing you notice when you see me? 😊", opts:["Your strength","Your smile","How handsome you are","The way you carry yourself"],ans:1 },
+                { q:"If I made you dinner, what would you say? 🍽️", opts:["You'd be speechless","You'd love every bite","You'd say 'finally!'","You'd kiss me as thanks"],ans:3 },
+                { q:"What's the cutest thing about you that you don't realize? 🥰", opts:["When you're focused","When you laugh hard","When you're protective","When you blush"],ans:3 },
+                { q:"How would I describe you to my friends? 💬", opts:["The sweetest person","My safe place","My favorite human","Everything I never knew I needed"],ans:3 },
+                { q:"What type of message from me makes your day? 📱", opts:["'I miss you'","'Thinking about you'","A random photo of us","'Come over' 💕"],ans:2 },
+                { q:"What's our love superpower? ⚡", opts:["Understanding without words","Making each other laugh","Loving through anything","All of the above"],ans:3 },
+                { q:"If I fell asleep on your shoulder, you'd… 💤", opts:["Stay perfectly still","Kiss my forehead","Fall asleep too","Never move again"],ans:1 },
+                { q:"What's the sweetest way to wake you up? ☀️", opts:["A soft kiss","Breakfast ready","Playing with your hair","Whispering 'good morning, handsome'"],ans:3 },
+                { q:"What in our relationship makes you feel strongest? 💪", opts:["Your trust in me","When you rely on me","The way you look at me","Knowing I'm yours"],ans:3 },
+                { q:"If I gave you a handwritten love note… ✉️", opts:["I'd keep it forever","I'd read it every night","I'd frame it","I'd write one back immediately"],ans:0 },
+                { q:"What's the best gift I could give you? 🎁", opts:["Your time","Your laughter","Your honesty","Just you"],ans:3 },
+                { q:"How do you know I love you without me saying it? 🤍", opts:["The way I look at you","How I hold your hand","How I remember everything","All of it"],ans:3 },
+                { q:"What simple moment with me felt magical? ✨", opts:["A long car ride together","Cooking together","Laying under the stars","Just being quiet together"],ans:3 },
+                { q:"What's the one thing I do that makes you feel special? 👑", opts:["Choose you every day","Listen to everything","Show up when it matters","Love you for who you are"],ans:3 },
+                { q:"If you could freeze one moment with me, which? ❄️", opts:["Our first meeting","Our first laugh together","When we said 'I love you'","Right now"],ans:3 }
+            ],
+            romantic: [
+                { q:"When did my heart officially become yours? 💕", opts:["The first time you smiled at me","When you showed me your real self","The moment I chose to stay","It was always yours"],ans:3 },
+                { q:"What makes my kiss different from anyone else's? 💋", opts:["It feels like home","It makes everything stop","It tells me everything","I never want it to end"],ans:2 },
+                { q:"If I told you I dreamt about you last night… 🌙", opts:["I'd want to hear everything","I'd blush","I'd say 'you were in mine too'","I'd kiss you"],ans:2 },
+                { q:"What do my eyes tell you when I look at you? 👀", opts:["That I'm proud of you","That I'm yours","That you're my world","Words I can't say out loud"],ans:3 },
+                { q:"Where's the most romantic place for us? 🌃", opts:["Under the stars","By the ocean","Anywhere quiet together","Home, just us"],ans:3 },
+                { q:"If I ran my fingers through your hair slowly… 🫠", opts:["I'd close my eyes","My heart would race","I'd pull you closer","I'd never want you to stop"],ans:3 },
+                { q:"What would you do if I cried in front of you? 😢", opts:["Hold you silently","Wipe your tears","Tell you you're safe","All of the above, every time"],ans:3 },
+                { q:"Our love story deserves to be… 📖", opts:["Written in a novel","Painted on a canvas","Told across generations","Lived every single day"],ans:3 },
+                { q:"What moment made you think 'this is forever'? ♾️", opts:["When you chose me at my worst","When I saw you fight for us","When words weren't needed","It's every day, not just one"],ans:3 },
+                { q:"If I surprised you with a dance at midnight… 💃", opts:["I'd hold you so tight","I'd whisper 'I love you'","I'd lead, but let you shine","I'd never let go"],ans:3 },
+                { q:"What's the most romantic thing you've imagined us doing? 🌹", opts:["Traveling the world","Growing old together","A rooftop dinner","All of it, every single one"],ans:3 },
+                { q:"What do you feel when I rest my head on your chest? 💓", opts:["Like I'm protecting you","Like the world is perfect","Like nothing else matters","Like this is what love is"],ans:3 },
+                { q:"If I whispered 'you're my forever' — honestly? 🤍", opts:["I'd believe every word","I'd hold you tighter","I'd say it back","My heart would explode"],ans:0 },
+                { q:"What's one romantic promise I should make to you? 🤝", opts:["To choose you every morning","To love your imperfections","To never stop trying","All three, forever"],ans:3 },
+                { q:"If our love was a universe, what would it contain? 🌌", opts:["Infinite stars","Endless warmth","Every dream come true","Things beyond imagination"],ans:3 }
+            ],
+            spicy: [
+                { q:"When I lean in close and say your name softly… 😏", opts:["My heart stops","I forget everything","I want to close the gap","You already know what happens"],ans:3 },
+                { q:"What's more dangerous — my smile or my silence? 🔥", opts:["Your smile — it's lethal","Your silence makes me curious","Both drive me crazy","Depends how close you are"],ans:3 },
+                { q:"If I bit my lip while looking at you… 👄", opts:["I'd look away blushing","I'd hold your gaze","I'd come closer","I'd match your energy"],ans:3 },
+                { q:"What's the most attractive thing about how I carry myself? 💫", opts:["Your confidence","Your softness","The mystery in your eyes","How you make me feel wanted"],ans:3 },
+                { q:"If you could read my mind right now, you'd see… 💭", opts:["How much I want you here","How you make me feel","Thoughts I'd rather act on","Things that would make you blush"],ans:3 },
+                { q:"What kind of tension do you feel when we're close? ⚡", opts:["Magnetic pull","An ache I can't explain","Like gravity between us","All of it, constantly"],ans:3 },
+                { q:"My voice changes when I talk to you. You notice? 🎙️", opts:["It gets softer","It gets deeper","It gets more playful","It makes me want to listen forever"],ans:2 },
+                { q:"If I looked at you and said 'come here' — what happens? 🫦", opts:["I'd come without hesitation","I'd make you come to me","I'd close the distance slowly","Some things don't need words"],ans:3 },
+                { q:"What's the best way to get your full attention? 👁️", opts:["Touch your arm softly","Whisper something unexpected","Lock eyes and smile","Walk away and let you follow"],ans:2 },
+                { q:"If we were in the rain, just us, no words… 🌧️", opts:["I'd pull you close","I'd kiss you","I'd just hold your face","All of it, like a movie"],ans:3 },
+                { q:"Do you prefer when I'm sweet… or when I'm bold? 😈", opts:["Sweet melts me","Bold excites me","The switch between both","You're irresistible either way"],ans:2 },
+                { q:"What happens when our fingers interlock slowly? 🤝", opts:["Fire","Calm","An unspoken promise","The start of something"],ans:0 },
+                { q:"If I told you 'I can't stop thinking about you'… 💘", opts:["I'd say 'then don't'","I'd pull you in","I'd match your confession","I'd show you what I'm thinking"],ans:3 },
+                { q:"When I'm near and your heartbeat speeds up — you… 🫀", opts:["Try to hide it","Hope I notice","Let me feel it","Accept there's no controlling it"],ans:3 },
+                { q:"What's one thing between us that words can't capture? 🌹", opts:["The chemistry","The depth","The unspoken understanding","Everything — and that's what makes it ours"],ans:3 }
+            ]
         }
-    ];
+    };
+
+    /** Build the quiz: pick & shuffle questions based on mode */
+    function buildQuiz() {
+        const bank = quizBank[playerType] || quizBank.queen;
+        const pick = (arr, n) => {
+            const shuffled = [...arr].sort(() => Math.random() - .5);
+            return shuffled.slice(0, Math.min(n, shuffled.length));
+        };
+
+        let sweet, romantic, spicy;
+        if (passionMode) {
+            sweet    = pick(bank.sweet, 2);
+            romantic = pick(bank.romantic, 2);
+            spicy    = pick(bank.spicy, 4);
+        } else {
+            sweet    = pick(bank.sweet, 3);
+            romantic = pick(bank.romantic, 3);
+            spicy    = pick(bank.spicy, 2);
+        }
+
+        // Tag categories
+        sweet.forEach(q => q.cat = 'sweet');
+        romantic.forEach(q => q.cat = 'romantic');
+        spicy.forEach(q => q.cat = 'spicy');
+
+        activeQuiz = [...sweet, ...romantic, ...spicy].sort(() => Math.random() - .5);
+    }
 
     /* ──────────────────────────────────────────
        3. UTILITIES
@@ -396,17 +504,37 @@
     $('#startBtn').addEventListener('click', () => {
         if (!musicPlaying) musicStart();
         if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-        showScreen('quizScreen');
-        initQuizProgress(); loadQuestion();
+        showScreen('genderScreen');
     });
 
     /* ══════════════════════════════════════════
-       13. QUIZ
+       12b. GENDER + INTENSITY SELECTION
+       ══════════════════════════════════════════ */
+    $('#btnQueen').addEventListener('click', () => { playerType = 'queen'; showScreen('intensityScreen'); });
+    $('#btnKing').addEventListener('click',  () => { playerType = 'king';  showScreen('intensityScreen'); });
+
+    $('#btnNormal').addEventListener('click',  () => { passionMode = false; startQuiz(); });
+    $('#btnPassion').addEventListener('click', () => { passionMode = true;  startQuiz(); });
+
+    function startQuiz() {
+        buildQuiz();
+        currentQuestion = 0;
+        quizScore = 0;
+        const qs = $('#quizScreen');
+        if (passionMode) qs.classList.add('passion-glow');
+        else qs.classList.remove('passion-glow');
+        showScreen('quizScreen');
+        initQuizProgress();
+        loadQuestion();
+    }
+
+    /* ══════════════════════════════════════════
+       13. QUIZ (dynamic)
        ══════════════════════════════════════════ */
     function initQuizProgress() {
         const row = $('#progressHeartsRow');
         row.innerHTML = '';
-        for (let i = 0; i < questions.length; i++) {
+        for (let i = 0; i < activeQuiz.length; i++) {
             const d = document.createElement('span');
             d.className = 'progress-heart-dot'; d.textContent = '♥';
             row.appendChild(d);
@@ -414,10 +542,28 @@
     }
 
     function loadQuestion() {
-        const q = questions[currentQuestion];
+        const q = activeQuiz[currentQuestion];
+        const qs = $('#quizScreen');
+        const badge = $('#quizBadge');
+
+        // Spicy visual mode
+        if (q.cat === 'spicy') {
+            qs.classList.add('spicy-active');
+            badge.className = 'quiz-category-badge spicy';
+            badge.textContent = '🔥 Spicy';
+        } else if (q.cat === 'romantic') {
+            qs.classList.remove('spicy-active');
+            badge.className = 'quiz-category-badge romantic';
+            badge.textContent = '💜 Romantic';
+        } else {
+            qs.classList.remove('spicy-active');
+            badge.className = 'quiz-category-badge sweet';
+            badge.textContent = '💗 Sweet';
+        }
+
         $('#questionText').textContent = q.q;
-        $('#progressCounter').textContent = `${currentQuestion + 1} / ${questions.length}`;
-        $('#progressFill').style.width = (currentQuestion / questions.length * 100) + '%';
+        $('#progressCounter').textContent = `${currentQuestion + 1} / ${activeQuiz.length}`;
+        $('#progressFill').style.width = (currentQuestion / activeQuiz.length * 100) + '%';
         const card = $('#questionCard');
         card.style.animation = 'none'; card.offsetHeight;
         card.style.animation = 'cardEnter .55s var(--ease-spring) both';
@@ -432,7 +578,7 @@
     }
 
     function pickAnswer(idx, btn) {
-        const q = questions[currentQuestion];
+        const q = activeQuiz[currentQuestion];
         $$('.option-btn').forEach(b => b.style.pointerEvents = 'none');
         if (idx === q.ans) {
             btn.classList.add('correct'); quizScore++;
@@ -446,16 +592,17 @@
         }
         setTimeout(() => {
             currentQuestion++;
-            if (currentQuestion < questions.length) loadQuestion();
+            if (currentQuestion < activeQuiz.length) loadQuestion();
             else {
                 $('#progressFill').style.width = '100%';
+                $('#quizScreen').classList.remove('spicy-active');
                 setTimeout(() => showScreen('miniGameScreen'), 600);
             }
         }, 1100);
     }
 
     function updateLoveMeter() {
-        $('#lovePercent').textContent = Math.round((quizScore / questions.length) * 100) + '%';
+        $('#lovePercent').textContent = Math.round((quizScore / activeQuiz.length) * 100) + '%';
     }
 
     function explodeHearts() {
@@ -735,7 +882,7 @@
     injectScoreGrad();
 
     function runFinalScreen() {
-        const qPct = (quizScore / questions.length) * 100;
+        const qPct = (quizScore / (activeQuiz.length || 1)) * 100;
         const bonus = Math.min(miniGameScore * 2, 30);
         let total = Math.min(Math.round(qPct * .7 + bonus + 10), 100);
         total = Math.max(total, 60);

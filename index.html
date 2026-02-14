@@ -101,13 +101,60 @@
     </section>
 
     <!-- ═══════════════════════════════════════
-         SCREEN 5 — Love Quiz
+         SCREEN 5a — Gender Select
+         ═══════════════════════════════════════ -->
+    <section class="screen gender-screen" id="genderScreen">
+        <div class="screen-content gender-content">
+            <div class="glass-card gender-card">
+                <h2 class="gender-title">Who is playing? 💕</h2>
+                <p class="gender-sub pname" data-tpl="Let me know, {name}…">Let me know…</p>
+                <div class="gender-buttons">
+                    <button class="btn-gender btn-queen" id="btnQueen">
+                        <span class="gender-emoji">👑</span>
+                        <span class="gender-label">Beautiful Queen</span>
+                    </button>
+                    <button class="btn-gender btn-king" id="btnKing">
+                        <span class="gender-emoji">🤴</span>
+                        <span class="gender-label">Handsome King</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         SCREEN 5b — Intensity Mode
+         ═══════════════════════════════════════ -->
+    <section class="screen intensity-screen" id="intensityScreen">
+        <div class="screen-content intensity-content">
+            <div class="glass-card intensity-card">
+                <h2 class="intensity-title">Choose Your Vibe ✨</h2>
+                <p class="intensity-sub">How intense should our quiz be?</p>
+                <div class="intensity-buttons">
+                    <button class="btn-intensity btn-normal" id="btnNormal">
+                        <span class="intensity-icon">💗</span>
+                        <span class="intensity-label">Normal Mode</span>
+                        <span class="intensity-desc">Sweet & romantic</span>
+                    </button>
+                    <button class="btn-intensity btn-passion" id="btnPassion">
+                        <span class="intensity-icon">🔥</span>
+                        <span class="intensity-label">Passion Mode</span>
+                        <span class="intensity-desc">Flirty & intense</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         SCREEN 5c — Love Quiz
          ═══════════════════════════════════════ -->
     <section class="screen quiz-screen" id="quizScreen">
         <div class="screen-content quiz-content">
-            <h2 class="section-heading">Love Quiz 💕</h2>
+            <h2 class="section-heading" id="quizHeading">Love Quiz 💕</h2>
+            <div class="quiz-category-badge" id="quizBadge"></div>
             <div class="quiz-progress">
-                <span id="progressCounter">1 / 5</span>
+                <span id="progressCounter">1 / 8</span>
                 <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
                 <div class="progress-hearts-row" id="progressHeartsRow"></div>
             </div>
