@@ -510,8 +510,8 @@
     /* ══════════════════════════════════════════
        12b. GENDER + INTENSITY SELECTION
        ══════════════════════════════════════════ */
-    $('#btnQueen').addEventListener('click', () => { playerType = 'queen'; showScreen('intensityScreen'); });
-    $('#btnKing').addEventListener('click',  () => { playerType = 'king';  showScreen('intensityScreen'); });
+    $('#btnQueen').addEventListener('click', () => { playerType = 'queen'; localStorage.setItem('valentineGender', 'queen'); showScreen('intensityScreen'); });
+    $('#btnKing').addEventListener('click',  () => { playerType = 'king';  localStorage.setItem('valentineGender', 'king');  showScreen('intensityScreen'); });
 
     $('#btnNormal').addEventListener('click',  () => { passionMode = false; startQuiz(); });
     $('#btnPassion').addEventListener('click', () => { passionMode = true;  startQuiz(); });
